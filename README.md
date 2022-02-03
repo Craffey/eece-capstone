@@ -4,7 +4,7 @@ Wave is a technology that utilizes wireless signals to detect hand gestures and 
 
 The current project intention is to detect changes in channel state information (CSI) in wifi packets while different hand gestures are performed, and determine the gesture using a machine learning algorithm.
 
-## Tentative Scheduleand Deliverables
+## Tentative Schedule and Deliverables
 
 Jan 18 Organize the design phase work | **Preparation**
 
