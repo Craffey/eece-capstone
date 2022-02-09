@@ -1,4 +1,4 @@
-# Advisor Meeting 2-22-22
+# Advisor Meeting 2-2-22
 
 Kaushik, John, Julia, Ben, Fatema, Morgan
 

@@ -14,8 +14,7 @@ rxWaveform = awgn(txWaveform*(-0.1+0.5i),30);
 %         smoothing
 idxLLTF = wlanFieldIndices(cfgHT,'L-LTF');
 demodSig = wlanLLTFDemodulate(rxWaveform(idxLLTF(1):idxLLTF(2),:),cfgHT);
-scatterplot(demodSig);
-grid;
+
 est = wlanLLTFChannelEstimate(demodSig,cfgHT);
 scatterplot(est);
 grid;
