@@ -9,6 +9,7 @@ Just writing stuff down as I do it so it can be replicated later on
 Hardware:
 
 - Ettus b200 mini SN 31216FC
+- Ettus b205 mini
 
 Software:
 
@@ -26,4 +27,10 @@ Software:
       -   what even *is* the output of of the receiver step function?
   - [Transmission and Reception of an Image Using WLAN Toolbox and a Single USRP E3xx](https://www.mathworks.com/help/supportpkg/usrpembeddedseriesradio/ug/transmission-and-reception-of-an-image-using-wlan-system-toolbox-and-a-single-usrp-e3xx.html)
     - complicated, long, uses a different SDR model with different modules
+  - Python code
+    - needs [uhd module.](https://files.ettus.com/manual/page_build_guide.html) Pain to install, I got it working on Mac by following the instructions closely and making sure to run python from the ```port install``` location (/opt/local/bin...)
+    - [basic sampling in python](https://pysdr.org/content/usrp.html#software-drivers-install)
+    - [fft visualizer](https://kb.ettus.com/Verifying_the_Operation_of_the_USRP_Using_UHD_and_GNU_Radio#Receiving_Samples)
+      - ```/opt/local/share/uhd/examples/rx_ascii_art_dft --freq 2.430e9 --rate 60e6 --gain 76 --dyn-rng 80 --bw 5e6 --ref-lvl -20 --frame-rate 5```
+      - I was able to pick up on 2.4gHz spikes next to my microwave but could not isolate channels of wifi, seems to just spike at whatever i set the center freq to
 
