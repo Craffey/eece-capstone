@@ -1,3 +1,6 @@
+%sample run
+%decode_wifi_packet('WiFi_cable_B200_b200_mini_1ft_run1', 'TransmitBit_1pckt_July13', 1, 1, 1)
+
 function BER = decode_wifi_packet(filename, txBit_filename, showConstellation, showSpectrum, displayFlag)
     load(filename,'wifi_rx_data')
     rxWaveform=wifi_rx_data;
@@ -157,6 +160,7 @@ function BER = decode_wifi_packet(filename, txBit_filename, showConstellation, s
 
             % Get the data field indices within a PPDU
             indNonHTData = wlanFieldIndices(rxNonHTcfg,'NonHT-Data');
+            
 
             % Recover PSDU bits using transmitted packet parameters and channel
             % estimates from L-LTF
