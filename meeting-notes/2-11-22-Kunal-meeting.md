@@ -20,7 +20,7 @@ kunal has scripts to do the transmit and the receive
 ## Questions for kunal in next meeting
 
 - we have the TX, RX, decode working with our SDRs and the files provided
-- our ultimate goal is to pull just the CSI out into a matrix so we can pass it on to our CNN (like in SignFi)
-  - what is the difference between the 1pkt and 1000pkt transmit bit files?
-  - we need the CSI asap since our system is real-time, but the packet decode is slow (specifically the line for detection of packets). Is there any way to get the CSI without decoding the entirety of the packet? or should we just collect less samples?
-  - packet decode does channel estimation but doesnt save it anywhere
+- our ultimate goal is to pull just the CSI out into a matrix so we can pass it on to our CNN (like in SignFi) we have modified packet decode to create a matrix of the CSI as it passes over the receiverd file
+- what is the difference between the 1pkt and 1000pkt transmit bit files?
+- we are getting the "dropped samples" message a lot on the tx side. is this just the sdrs being finicky? what can cause this?
+- 
