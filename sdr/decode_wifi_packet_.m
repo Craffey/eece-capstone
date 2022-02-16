@@ -1,8 +1,9 @@
 %sample run
-[ber, csi] = decode_wifi_packet('WiFi_cable_B200_b200_mini_1ft_run1', 'TransmitBit_1pckt_July13', 1, 1, 1)
+[ber, csi] = decode_wifi_packet('WiFi_cable_B200_b200_mini_1ft_run1', 'TransmitBit_1pckt_July13', 0, 0, 1)
+csi = permute(csi, [3, 1, 2])
 
 function [BER, csi] = decode_wifi_packet(filename, txBit_filename, showConstellation, showSpectrum, displayFlag)
-    csi = zeros(52, 0);
+    csi = zeros(52, 1, 0);
     csi_index = 1;
     
     load(filename,'wifi_rx_data')
@@ -105,7 +106,7 @@ function [BER, csi] = decode_wifi_packet(filename, txBit_filename, showConstella
             lltf = nonHT(indLLTF(1):indLLTF(2),:);
             demodLLTF = wlanLLTFDemodulate(lltf,chanBW);
             chanEstLLTF = wlanLLTFChannelEstimate(demodLLTF,chanBW);
-            csi(:, csi_index) = chanEstLLTF;
+            csi(:, :, csi_index) = chanEstLLTF;
             csi_index = csi_index + 1;
 
             % Noise estimation
