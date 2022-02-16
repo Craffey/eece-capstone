@@ -1,7 +1,11 @@
 %sample run
-%decode_wifi_packet('WiFi_cable_B200_b200_mini_1ft_run1', 'TransmitBit_1pckt_July13', 1, 1, 1)
+[ber, csi] = decode_wifi_packet('WiFi_cable_B200_b200_mini_1ft_run1', 'TransmitBit_1pckt_July13', 0, 0, 1)
+csi = permute(csi, [3, 1, 2])
 
-function BER = decode_wifi_packet(filename, txBit_filename, showConstellation, showSpectrum, displayFlag)
+function [BER, csi] = decode_wifi_packet(filename, txBit_filename, showConstellation, showSpectrum, displayFlag)
+    csi = zeros(52, 1, 0);
+    csi_index = 1;
+    
     load(filename,'wifi_rx_data')
     rxWaveform=wifi_rx_data;
     load(txBit_filename,'transmitBits'); % Load transmitted bits
@@ -102,6 +106,8 @@ function BER = decode_wifi_packet(filename, txBit_filename, showConstellation, s
             lltf = nonHT(indLLTF(1):indLLTF(2),:);
             demodLLTF = wlanLLTFDemodulate(lltf,chanBW);
             chanEstLLTF = wlanLLTFChannelEstimate(demodLLTF,chanBW);
+            csi(:, :, csi_index) = chanEstLLTF;
+            csi_index = csi_index + 1;
 
             % Noise estimation
             noiseVarNonHT = helperNoiseEstimate(demodLLTF);
@@ -171,14 +177,6 @@ function BER = decode_wifi_packet(filename, txBit_filename, showConstellation, s
                    chanEstLLTF,noiseVarNonHT,rxNonHTcfg);
             end
 
-            if (length(rxPSDU)==8192)
-                count=count+1;
-                [error_number(count), ~]=biterr(rxPSDU,transmitBits(8192*(count-1)+1:8192*count));
-            else
-                count=count+1;
-                [error_number(count)]=8192;
-            end
-
 
             if(showConstellation)   
                 constellation(reshape(eqSym,[],1)); % Current constellation
@@ -213,7 +211,7 @@ function BER = decode_wifi_packet(filename, txBit_filename, showConstellation, s
                 causeException = MException('MATLAB:myCode:dimensions',msg);
                 ME = addCause(ME,causeException);
            end
-           %rethrow(ME)
+           rethrow(ME)
         end
 
             % Update search index
