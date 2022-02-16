@@ -19,10 +19,11 @@ function [net_info, perf] = signfi_cnn_example(csi,label)
     t0 = toc; % pre-processing time
     
     % [M,N,S]: CSI matrix for each instance
-    % M = 200 CSI samples
-    % N = # subcarriers
-    % S = ranges from 1-3
-    % T: the total number of samples / gestures  
+    % M = # CSI samples (200)
+    % N = # subcarriers (30)
+    % S = # antennas (1-3)
+    % T = # gestures sampled (5520)
+    
     [M,N,S,T] = size(csi_tensor);
     Nw = 276; % number of classes
     
