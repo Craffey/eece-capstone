@@ -1,4 +1,13 @@
 % setup and call to this is in wave wrapper
+% receiver = wave_receiver;
+% count = receiver.init(packet_length, ...
+%                           channel_mapping, ...
+%                           rx_gain, ...
+%                           center_frequency, ...
+%                           sample_count);
+% receiver.receive(count, ...
+%                     rxFilename)
+
 classdef wave_receiver
     
     properties
@@ -47,9 +56,9 @@ classdef wave_receiver
         end
         
         % recive samples from the radio and store in a file
-        function receive(self, ... wave receiver selfect
+        function receive(self, ...
                          count, ...
-                         fname )
+                         fname)
                      
               % Loop until the example reaches the target stop time, which is 10 sec
               wifi_rx_data=zeros(count * self.radio.SamplesPerFrame, 1);
