@@ -44,7 +44,7 @@ function [training_csi] = wave_trainer(captures, ... number of times to capture 
         disp(run);
         % file name
         rxFilename=strcat(device_name, '_',gesture_name,'_', distance, '_', ...
-                    gesture_location, '_', num2str(run), '.mat' );
+                    gesture_location, '.mat' );
         % 1. invoke the SDR receive to sample IQ into a file
         receiver.receive(count, ...
                         rxFilename)
