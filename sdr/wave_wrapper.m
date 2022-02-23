@@ -34,7 +34,7 @@ else
 end
 
 % loop is number of times to sample a gesture
-for i=1:10 
+for i=1:10
     disp(i);
     rxFilename=strcat('WiFi_', device_name,'_',run, '.mat' );
 

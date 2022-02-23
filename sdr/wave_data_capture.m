@@ -3,10 +3,11 @@
 % note: make sure path contains locations for our custom functions
 %   1. invoke the SDR receive to sample IQ into a file
 %   2. pass the file to the packet decoder to get the CSI
-%   3. pass the training CSI to the CNN to train the gesture
-% example usage wave_trainer(5,'wave','between','1ft')
+%         append the csi data to csi matrix with extra dimmension
+%   3. save the training_csi to a file
+% example usage wave_data_capture(5,'wave','between','1ft')
 
-function [training_csi] = wave_trainer(captures, ... number of times to capture the gesture
+function [training_csi] = wave_data_capture(captures, ... number of times to capture the gesture
                     gesture_name, ... name of the gesture
                     gesture_location, ... where in relation to antenna gesture is
                     distance) % distance between antennas
@@ -31,7 +32,7 @@ function [training_csi] = wave_trainer(captures, ... number of times to capture 
         % extra dimmension on the CSI for each capture of the gesture
         % 52 subcarriers captured by channelest, can scale back after if we
         % only want to hand over a certain amount
-        training_csi = zeros(2*count, 52, captures);
+        training_csi = zeros(200, 52, captures);
     
         disp("Press enter to receive start");
         pause;
@@ -40,8 +41,9 @@ function [training_csi] = wave_trainer(captures, ... number of times to capture 
         warning(message('sdru:sysobjdemos:MainLoop'))
     end
     % loop is number of times to sample a gesture
-    for run=1:captures 
-        disp(run);
+    run = 1;
+    while (run <= captures)
+        fprintf('attempting run number %d\n', run);
         % file name
         rxFilename=strcat(device_name, '_',gesture_name,'_', distance, '_', ...
                     gesture_location, '.mat' );
@@ -53,17 +55,21 @@ function [training_csi] = wave_trainer(captures, ... number of times to capture 
         if(ber == 0)
             csi=permute(csi, [3, 1, 2]);
             % append data
-            % TODO make it so we only give the first 200 (or whatever)
-            % samples to the training csi matrix so we guarantee allignment
-            % and can pass to CNN
-            training_csi(:,:,run) = csi;
+            if (length(csi) >= 200)
+                training_csi(:,:,run) = csi(1:200,:);
+                run = run + 1;
+            else
+                warning('csi came back with less than 200 samples');
+            end
         else % decode returned error
             disp('Packets are undecodable');
         end
     end
-    % 3. pass the training CSI to the CNN to train the gesture
-    disp(strcat('training ' , gesture_name));
-    % wave_cnn_trainer(training_csi);
+    % 3. save the training_csi to a file
+    csiFilename = strcat(regexprep(datestr(datetime), '\s+', '_'), ...
+                    '_', gesture_name,'_', distance, '_', ...
+                    gesture_location, '_csi_data.mat' );
+    save (csiFilename, 'training_csi');
 
     release(receiver.radio);
 end
