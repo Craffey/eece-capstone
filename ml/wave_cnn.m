@@ -3,6 +3,8 @@
 %num_gestures = number of distinct samples/classes
 
 function [net_info, perf] = wave_cnn(csi,label, num_gestures)
+    temp(:, :, 1, :) = csi;
+    csi = temp;
     tic; % start time
     
     % prepare csi for training data
