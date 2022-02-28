@@ -35,7 +35,7 @@ else
 end
 
 % loop is number of times to sample a gesture
-for i=1:10
+for i=1:100
     disp(i);
     rxFilename=strcat('WiFi_', device_name,'_',run, '.mat' );
 
@@ -56,18 +56,18 @@ for i=1:10
         csi_4d(:, :, 1, 2) = csi(1:200, :);
         
         csi_abs = abs(csi_4d);
-        csi_abs = abs(csi_4d);
         csi_ang = angle(csi_4d);
         csi_tensor = [csi_abs,csi_ang];
+        
 
         % 3. pass the CSI to the CNN to classify the captured gesture
         disp('calculating the gesture');
-        gesture= classify(net, csi_tensor);
+        [gesture,err] = classify(net, csi_tensor);
         
         fprintf('Gesture %d\n', gesture(1));
 
         % 4. invoke the smartdevice controller to command the corect device
-        disp('invoking smart device');
+%         disp('invoking smart device');
         % !smartdevice_controller.sh gesture;
 
     else % decode returned error
