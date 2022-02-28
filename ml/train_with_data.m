@@ -17,7 +17,7 @@ for file_num = 1 : length(files)
     gesture_name = split_filename(5);
     if strcmp(gesture_name, "nothing")
         label = 1;
-    elseif strcmp(gesture_name, "wave")
+    elseif strcmp(gesture_name, "hand")
         label = 2;
     end
     % 200 x 52 x N samples, N captures

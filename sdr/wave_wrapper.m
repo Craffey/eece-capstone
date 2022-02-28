@@ -15,6 +15,7 @@ channel_mapping = 1;
 rx_gain = 0;
 center_frequency = 900e6;
 sample_count = 20e5;
+csi_4d = zeros(200, 52, 1, 1);
 
 receiver = wave_receiver;
 if receiver.radioFound
@@ -42,12 +43,28 @@ for i=1:10
     receiver.receive(count, ...
                     rxFilename)
     % 2. pass the file to the packet decoder to get the CSI
+    disp('Received packet, decoding...');
     [ber, csi]=decode_wifi_packet(rxFilename, txBit_filename, 0, 0, 0);
     if(ber == 0)
         csi=permute(csi, [3, 1, 2]);
+        if (length(csi) < 200)
+            warning('csi came back with less than 200 samples');
+            continue
+        end
+        
+        csi_4d(:, :, 1, 1) = csi(1:200, :);
+        csi_4d(:, :, 1, 2) = csi(1:200, :);
+        
+        csi_abs = abs(csi_4d);
+        csi_abs = abs(csi_4d);
+        csi_ang = angle(csi_4d);
+        csi_tensor = [csi_abs,csi_ang];
+
         % 3. pass the CSI to the CNN to classify the captured gesture
         disp('calculating the gesture');
-        % gesture=wave_cnn(csi);
+        gesture= classify(net, csi_tensor);
+        
+        fprintf('Gesture %d\n', gesture(1));
 
         % 4. invoke the smartdevice controller to command the corect device
         disp('invoking smart device');
