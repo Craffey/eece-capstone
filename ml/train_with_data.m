@@ -33,4 +33,7 @@ end
 cd(parent)
 cd ml
 % train CNN
-wave_cnn(captures, labels', 2)
+[info, perf, net] = wave_cnn(captures, labels', 2);
+filename = strcat(regexprep(datestr(datetime), '\s+', '_'), ...
+    "_", "wave_model");
+save (filename, "net")

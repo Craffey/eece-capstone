@@ -2,7 +2,7 @@
 %label = matrix of labels as integers
 %num_gestures = number of distinct samples/classes
 
-function [net_info, perf] = wave_cnn(csi,label, num_gestures)
+function [net_info, perf, trainedNet] = wave_cnn(csi,label, num_gestures)
     temp(:, :, 1, :) = csi;
     csi = temp;
     tic; % start time
@@ -74,4 +74,6 @@ function [net_info, perf] = wave_cnn(csi,label, num_gestures)
 
     net_info = tr;
     perf = test_accuracy;
+    
+
 end
