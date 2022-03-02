@@ -20,7 +20,7 @@ function [training_csi] = wave_data_capture(captures, ... number of times to cap
     rx_gain = 0;
     center_frequency = 900e6;
     sample_count = 20e5;
-    rxFilenames = zeros();
+    rxFilenames = string([]);
 
     receiver = wave_receiver;
     if receiver.radioFound
@@ -47,14 +47,15 @@ function [training_csi] = wave_data_capture(captures, ... number of times to cap
         fprintf('attempting run number %d\n', run);
         % file name
         rxFilenames(run)=strcat(device_name, '_',gesture_name,'_', distance, '_', ...
-                    gesture_location, '_', run, '.mat' );
+                    gesture_location, '_', string(run), '.mat' );
         % 1. invoke the SDR receive to sample IQ into a file
         receiver.receive(count, ...
                         rxFilenames(run))
         run = run + 1;
     end
-    for run = 0:length(rxFileNames)
+    for run = 1:length(rxFilenames)
         % 2. pass the file to the packet decoder to get the CSI
+        fprintf('decoding packet %d\n',run);
         [ber, csi]=decode_wifi_packet(rxFilenames(run), txBit_filename, 0, 0, 0);
         if(ber == 0)
             csi=permute(csi, [3, 1, 2]);
