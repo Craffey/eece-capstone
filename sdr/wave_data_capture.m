@@ -53,7 +53,7 @@ function [training_csi] = wave_data_capture(captures, ... number of times to cap
                         rxFilenames(run))
         run = run + 1;
     end
-    for run = 1:length(rxFilenames)
+    parfor run = 1:length(rxFilenames)
         % 2. pass the file to the packet decoder to get the CSI
         fprintf('decoding packet %d\n',run);
         [ber, csi]=decode_wifi_packet(rxFilenames(run), txBit_filename, 0, 0, 0);

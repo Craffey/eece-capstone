@@ -16,8 +16,10 @@ function [BER,csi] = decode_wifi_packet(filename, ...
     BER=0;
     error_number=[];
     % Setup the constellation diagram viewer for equalized WLAN symbols
-    constellation = comm.ConstellationDiagram('Title','Equalized WLAN Symbols',...
-                                    'ShowReferenceConstellation',false);
+    if(showConstellation)
+        constellation = comm.ConstellationDiagram('Title','Equalized WLAN Symbols',...
+                                        'ShowReferenceConstellation',false);
+    end
 
     nonHTcfg = wlanNonHTConfig;
     nonHTcfg.ChannelBandwidth='CBW5'; 
