@@ -45,7 +45,10 @@ function [net_info, perf, trainedNet] = wave_cnn(csi,label, num_gestures)
     cv = cvpartition(T,'kfold',K); % 20% for testing
     k = 1; % for k=1:K
     trainIdx = find(training(cv,k));
+    % shuffle indices so they are in random order
+    trainIdx = trainIdx(randperm(length(trainIdx)));
     testIdx = find(test(cv,k));
+    testIdx = testIdx(randperm(length(testIdx)));
     trainCsi = csi_tensor(:,:,:,trainIdx);
     trainWord = word(trainIdx,1);
     testCsi = csi_tensor(:,:,:,testIdx);
