@@ -8,7 +8,7 @@ function [net_info, perf, trainedNet] = wave_cnn(csi,label, num_gestures)
     tic; % start time
     
     % prepare csi for training data
-    csi_abs = abs(csi);
+    csi_abs = normalize(abs(csi));
     csi_ang = angle(csi);
     csi_tensor = [csi_abs,csi_ang];
     

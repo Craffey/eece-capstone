@@ -55,7 +55,7 @@ for i=1:100
         csi_4d(:, :, 1, 1) = csi(1:200, :);
         csi_4d(:, :, 1, 2) = csi(1:200, :);
         
-        csi_abs = abs(csi_4d);
+        csi_abs = normalize(abs(csi_4d));
         csi_ang = angle(csi_4d);
         csi_tensor = [csi_abs,csi_ang];
         
