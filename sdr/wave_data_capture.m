@@ -43,35 +43,52 @@ function [training_csi] = wave_data_capture(receiver, ... wave_receiver object
     else
         warning(message('sdru:sysobjdemos:MainLoop'))
     end
-    rx_wifi_iq_captures = {captures};
+    rx_wifi_iq_captures = cell(100, 1);
     % loop is number of times to sample a gesture
     run = 1;
     while (run <= captures)
         fprintf('attempting run number %d\n', run);
         % file name
-        %rxFilenames(run)=strcat('iq/', device_name, '_',gesture_name,'_', distance, '_', ...
-                    %gesture_location, '_', string(run), '.mat' );
+        %
         % 1. invoke the SDR receive to sample IQ into a file
         rx_wifi_iq = receiver.receive(count);
         % store capture as cell in cell array with all data
         rx_wifi_iq_captures{run} = rx_wifi_iq;
+        if(mod(run, 100) == 0)
+            % save 100 iq matrices as a file and re-initialize to empty
+            % cell array
+            % this avoids high memory usage
+            rxFilenames(run/100)=strcat('iq/', device_name, '_',gesture_name,'_', distance, '_', ...
+                    gesture_location, '_', string(run - 99), '-', string(run + floor(run/100)), '.mat' );
+            save(rxFilenames(run/100), 'rx_wifi_iq_captures');
+            rx_wifi_iq_captures = cell(100, 1);
+        end
         run = run + 1;
     end
-    parfor run = 1:captures
-        % 2. pass the file to the packet decoder to get the CSI
-        fprintf('decoding packet %d\n',run);
-        [ber, csi]=decode_wifi_packet(rx_wifi_iq_captures{run}, txBit_filename, 0, 0, 0);
-        if(ber == 0)
-            csi=permute(csi, [3, 1, 2]);
-            % append data
-            if (length(csi) >= 200)
-                training_csi(:,:,run) = csi(1:200,:);
-            else
-                warning('csi came back with less than 200 samples');
+    % save any leftover iq samples
+    rxFilenames(ceil(run/100))=strcat('iq/', device_name, '_',gesture_name,'_', distance, '_', ...
+        gesture_location, '_', string(run - mod(run, 100) + 1), '-', string(run), '.mat' );
+    save(rxFilenames(ceil(run/100)), 'rx_wifi_iq_captures');
+    for i = 1:ceil(captures / 100)
+        load(rxFilenames(i));
+        recv_csi = zeros(200, 52, 100);
+        parfor run = 1:100
+            % 2. pass the file to the packet decoder to get the CSI
+            fprintf('decoding packet %d\n',run);
+            [ber, csi]=decode_wifi_packet(rx_wifi_iq_captures{run}, txBit_filename, 0, 0, 0);
+            if(ber == 0)
+                csi=permute(csi, [3, 1, 2]);
+                % append data
+                if (length(csi) >= 200)
+                    recv_csi(:,:,run) = csi(1:200,:);
+                else
+                    warning('csi came back with less than 200 samples');
+                end
+            else % decode returned error
+                disp('Packets are undecodable');
             end
-        else % decode returned error
-            disp('Packets are undecodable');
         end
+        training_csi(:, :, (i-1)*100+1:i*100) = recv_csi(:, :, :);
     end
     % 3. save the training_csi to a file
     csiFilename = strcat(regexprep(datestr(datetime), '(\s|:)+', '_'), ...
