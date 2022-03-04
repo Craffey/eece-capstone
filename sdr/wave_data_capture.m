@@ -37,26 +37,28 @@ function [training_csi] = wave_data_capture(captures, ... number of times to cap
     
         disp("Press enter to receive start");
         pause;
-        disp("stating reception of data")
+        disp("starting reception of data")
     else
         warning(message('sdru:sysobjdemos:MainLoop'))
     end
+    rx_wifi_iq_captures = {captures};
     % loop is number of times to sample a gesture
     run = 1;
     while (run <= captures)
         fprintf('attempting run number %d\n', run);
         % file name
-        rxFilenames(run)=strcat(device_name, '_',gesture_name,'_', distance, '_', ...
-                    gesture_location, '_', string(run), '.mat' );
+        %rxFilenames(run)=strcat('iq/', device_name, '_',gesture_name,'_', distance, '_', ...
+                    %gesture_location, '_', string(run), '.mat' );
         % 1. invoke the SDR receive to sample IQ into a file
-        receiver.receive(count, ...
-                        rxFilenames(run))
+        rx_wifi_iq = receiver.receive(count);
+        % store capture as cell in cell array with all data
+        rx_wifi_iq_captures{run} = rx_wifi_iq;
         run = run + 1;
     end
-    parfor run = 1:length(rxFilenames)
+    parfor run = 1:captures
         % 2. pass the file to the packet decoder to get the CSI
         fprintf('decoding packet %d\n',run);
-        [ber, csi]=decode_wifi_packet(rxFilenames(run), txBit_filename, 0, 0, 0);
+        [ber, csi]=decode_wifi_packet(rx_wifi_iq_captures{run}, txBit_filename, 0, 0, 0);
         if(ber == 0)
             csi=permute(csi, [3, 1, 2]);
             % append data

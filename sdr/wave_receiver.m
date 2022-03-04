@@ -55,10 +55,8 @@ classdef wave_receiver
             count=ceil(sample_count / (self.radio.SamplesPerFrame));
         end
         
-        % recive samples from the radio and store in a file
-        function receive(self, ...
-                         count, ...
-                         fname)
+        % recive samples from the radio and return them in a matrix
+        function wifi_rx_data = receive(self, count)
                      
               % Loop until the example reaches the target stop time, which is 10 sec
               wifi_rx_data=zeros(count * self.radio.SamplesPerFrame, 1);
@@ -70,7 +68,7 @@ classdef wave_receiver
                   timeCounter = timeCounter + 1;
                 end
               end
-            save (fname, 'wifi_rx_data');
+            %save (fname, 'wifi_rx_data');
         end
     end
 end

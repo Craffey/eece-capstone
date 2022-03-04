@@ -37,14 +37,13 @@ end
 % loop is number of times to sample a gesture
 for i=1:100
     disp(i);
-    rxFilename=strcat('WiFi_', device_name,'_',run, '.mat' );
+    %rxFilename=strcat('WiFi_', device_name,'_',run, '.mat' );
 
     % 1. invoke the SDR receive to sample IQ into a file
-    receiver.receive(count, ...
-                    rxFilename)
+    rx_wifi_data = receiver.receive(count);
     % 2. pass the file to the packet decoder to get the CSI
     disp('Received packet, decoding...');
-    [ber, csi]=decode_wifi_packet(rxFilename, txBit_filename, 0, 0, 0);
+    [ber, csi]=decode_wifi_packet(rx_wifi_data, txBit_filename, 0, 0, 0);
     if(ber == 0)
         csi=permute(csi, [3, 1, 2]);
         if (length(csi) < 200)
