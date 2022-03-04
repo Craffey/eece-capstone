@@ -5,9 +5,11 @@
 %   2. pass the file to the packet decoder to get the CSI
 %         append the csi data to csi matrix with extra dimmension
 %   3. save the training_csi to a file
-% example usage wave_data_capture(5,'wave','between','1ft')
+% example usage receiver = wave_receiver;
+% wave_data_capture(receiver, 100,'wave','between','1mac');
 
-function [training_csi] = wave_data_capture(captures, ... number of times to capture the gesture
+function [training_csi] = wave_data_capture(receiver, ... wave_receiver object
+                    captures, ... number of times to capture the gesture
                     gesture_name, ... name of the gesture
                     gesture_location, ... where in relation to antenna gesture is
                     distance) % distance between antennas
@@ -22,7 +24,7 @@ function [training_csi] = wave_data_capture(captures, ... number of times to cap
     sample_count = 20e5;
     rxFilenames = string([]);
 
-    receiver = wave_receiver;
+    
     if receiver.radioFound
         % initialize the receiver radio
         count = receiver.init(packet_length, ...
