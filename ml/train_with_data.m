@@ -25,9 +25,12 @@ for file_num = 1 : length(files)
     % iterate over captures in this file
     for capture_num = 1 : size(training_csi, 3)
         capture = training_csi(:, :, capture_num);
-        captures(:, :, num_captures+1) = capture;
-        num_captures = num_captures + 1;
-        labels(num_captures) = label;
+        % ignore captures that are 0, these packets were undecodable
+        if all(capture, 'all')
+            captures(:, :, num_captures+1) = capture;
+            num_captures = num_captures + 1;
+            labels(num_captures) = label;
+        end
     end
 end
 cd(parent)
