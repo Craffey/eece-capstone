@@ -1,6 +1,6 @@
 %sample to run
 % transmitter = wave_transmitter(900e6, 1, 70);
-% transmitter.transmit('WiFi_80211a', false, 100);
+% transmitter.transmit('mcs7.mat', false, 10);
 % For long packet run 'WiFi_80211a_long', true, 30 
 
 % Select tx_gain 70 for B210, 72 for B210, 0 for X310, 8 for N210.
