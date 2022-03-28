@@ -17,7 +17,7 @@ for file_num = 1 : length(files)
     gesture_name = split_filename(5);
     if strcmp(gesture_name, "nothing")
         label = 1;
-    elseif strcmp(gesture_name, "hand")
+    elseif strcmp(gesture_name, "jazz")
         label = 2;
     end
     % 200 x 52 x N samples, N captures
@@ -25,9 +25,11 @@ for file_num = 1 : length(files)
     % iterate over captures in this file
     for capture_num = 1 : size(training_csi, 3)
         capture = training_csi(:, :, capture_num);
-        captures(:, :, num_captures+1) = capture;
-        num_captures = num_captures + 1;
-        labels(num_captures) = label;
+        if all(capture, 'all')
+            captures(:, :, num_captures+1) = capture;
+            num_captures = num_captures + 1;
+            labels(num_captures) = label;
+        end
     end
 end
 cd(parent)
