@@ -1,31 +1,31 @@
 import argparse
-from action import Action
-from color import Color 
 from ble import Ble 
+import asyncio
+import os
+from twilio.rest import Client
 
-class Test(Action):
+account_sid = os.environ['TWILIO_ACCOUNT_SID']
+auth_token = os.environ['TWILIO_AUTH_TOKEN']
 
-    def action1(self):
-        print("action 1")
+def send_msg(number: str):
+    client = Client(account_sid, auth_token)
+    message = client.messages \
+                    .create(
+                         body="INTRUDER ALERT! INTRUDER ALERT!",
+                         from_='+14348305485',
+                         to=number
+                     )
+    print(f"msg sid: {message.sid}")
 
-    def action2(self):
-        print("action 2")
-
-backends = {
-        'test': Test,
-        'color': Color,
-        'ble': Ble,
-}
+async def amain(args):
+    if (args.action == 1):
+        await Ble.light_off()
+        send_msg('+19174463641')
+    elif (args.action == 2):
+        await Ble.light_on()
 
 if __name__ == "__main__":
     parse = argparse.ArgumentParser('run a backend')
-    parse.add_argument('backend', type=str, choices=['test', 'color', 'ble'])
     parse.add_argument('--action', type=int)
-
     args = parse.parse_args()
-
-    backend = backends[args.backend]()
-    if (args.action == 1):
-        backend.action1()
-    elif (args.action == 2):
-        backend.action2()
+    asyncio.run(amain(args))
