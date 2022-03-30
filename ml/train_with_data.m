@@ -17,8 +17,12 @@ for file_num = 1 : length(files)
     gesture_name = split_filename(5);
     if strcmp(gesture_name, "nothing")
         label = 1;
-    elseif strcmp(gesture_name, "jazz")
+    elseif strcmp(gesture_name, "clap")
         label = 2;
+    elseif strcmp(gesture_name, "jazz")
+        label = 3;
+    elseif strcmp(gesture_name, "conducting")
+        label = 4;
     end
     % 200 x 52 x N samples, N captures
     load(filename);
@@ -35,7 +39,7 @@ end
 cd(parent)
 cd ml
 % train CNN
-[info, perf, net] = wave_cnn(captures, labels', 2);
+[info, perf, net] = wave_cnn(captures, labels', 4);
 filename = strcat(regexprep(datestr(datetime), '(\s|:)+', '_'), ...
     "_", "wave_model");
 save (filename, "net")

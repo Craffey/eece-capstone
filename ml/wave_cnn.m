@@ -10,7 +10,7 @@ function [net_info, perf, trainedNet] = wave_cnn(csi,label, num_gestures)
     % prepare csi for training data
     csi_abs = normalize(abs(csi));
     csi_ang = angle(csi);
-    csi_tensor = [csi_abs,csi_ang];
+    csi_tensor = [csi_ang,csi_abs];
     
     %store labels as a categorical array
     word = categorical(label);
@@ -32,10 +32,10 @@ function [net_info, perf, trainedNet] = wave_cnn(csi,label, num_gestures)
     
     % Convolutional Neural Network settings
     layers = [imageInputLayer([M N S]);
-              convolution2dLayer(4,4,'Padding',0);
+              convolution2dLayer(16,16,'Padding',0);
               batchNormalizationLayer();
               reluLayer();
-              maxPooling2dLayer(4,'Stride',4); 
+              maxPooling2dLayer(16,'Stride',16); 
               fullyConnectedLayer(num_gestures);
               softmaxLayer();
               classificationLayer()];
