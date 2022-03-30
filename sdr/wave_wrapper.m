@@ -6,6 +6,9 @@
 %   3. pass the CSI to the CNN to classify the captured gesture
 %   4. invoke the smartdevice controller to command the corect device
 
+%use to enable and disable heatmap output
+heat_on = 1;
+
 % function call values
 device_name = 'b200_mini';
 run = 'rxcapture';
@@ -59,25 +62,27 @@ for i=1:100
         csi_tensor = [csi_abs,csi_ang];
         
         % 2.5 display heatmap
-        xvalues = 1:200;
-        yvalues = 1:52;
+        if (heat_on)
+            xvalues = 1:200;
+            yvalues = 1:52;
 
-        amp1 = permute(normalize(abs(csi(1:200,:))), [2 1]);
-        ang1 = permute(angle(csi(1:200,:)), [2 1]);
+            amp1 = permute(normalize(abs(csi(1:200,:))), [2 1]);
+            ang1 = permute(angle(csi(1:200,:)), [2 1]);
 
-        % create amplitude heatmap
-        subplot(2, 1, 1);
-        h1 = heatmap(xvalues,yvalues,amp1);
-        h1.Title = 'CSI amplitude';
-        h1.XLabel = 'Packet Num';
-        h1.YLabel = 'subcarrier';
+            % create amplitude heatmap
+            subplot(2, 1, 1);
+            h1 = heatmap(xvalues,yvalues,amp1);
+            h1.Title = 'CSI amplitude';
+            h1.XLabel = 'Packet Num';
+            h1.YLabel = 'subcarrier';
 
-        % create phase heatmap
-        subplot(2, 1, 2);
-        h2 = heatmap(xvalues,yvalues,ang1);
-        h2.Title = 'CSI phase';
-        h2.XLabel = 'Packet Num';
-        h2.YLabel = 'subcarrier';
+            % create phase heatmap
+            subplot(2, 1, 2);
+            h2 = heatmap(xvalues,yvalues,ang1);
+            h2.Title = 'CSI phase';
+            h2.XLabel = 'Packet Num';
+            h2.YLabel = 'subcarrier';
+        end
 
         % 3. pass the CSI to the CNN to classify the captured gesture
         disp('calculating the gesture');
