@@ -93,6 +93,11 @@ for i=1:100
         % 4. invoke the smartdevice controller to command the corect device
 %         disp('invoking smart device');
         % !smartdevice_controller.sh gesture;
+        if(cast(gesture(1),"uint8") == 2)
+            !sudo python3.8 ../light/main.py --action off
+        else
+            !sudo python3.8 ../light/main.py --action on
+        end
 
     else % decode returned error
         disp('Packets are undecodable');
